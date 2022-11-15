@@ -11,8 +11,40 @@
 
 <script>
   window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+// in this challenge we'll be exploring the browser's SpeechRecognition API. 
+// speech recognition is a global variable that is available in the browser.
+// first we'll create an instance of speech recognition. We'll then set it to interim results, which means that it will return results as we speak. To negate this function would mean you have to stop speaking before it will return a result.
+  const recognition = new SpeechRecognition();
+    recognition.interimResults = true;
+
+let p = document.createElement('p');
+    const words = document.querySelector('.words');
+    words.appendChild(p);
+
+    recognition.addEventListener('result', e => {
+    // console.log(e.results) by console.logging here we can see instances of the speech recognition events. We get a tonne of data back. We can see the transcript, the confidence, the isFinal property and the length of the results array. We can also see the index of the current result.
+        const transcript = Array.from(e.results)
+            .map(result => result[0])
+            .map(result => result.transcript) // this gives us an array of the transcript (the words it thinks we're saying)
+            .join('');
+            // the code below is what makes my speech appear in the DOM. 
+            p.textContent = transcript;
+            if(e.results[0].isFinal) {
+            p = document.createElement('p');
+            words.appendChild(p);
+        }       
+        if (transcript.includes("what's my age again?")) {
+            console.log('23- noone likes you');
+        }
+            console.log(transcript); 
+});
+
+recognition.addEventListener('end', recognition.start); // we add a second  event listener to the recognition object. This will listen for the end event. When it hears the end event it will run the start method on the recognition object. This will start the speech recognition again. x
 
 
+recognition.start();
+
+ 
 </script>
 
 
